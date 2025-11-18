@@ -4,7 +4,8 @@
         "*": false,
         "plaintext": false,
         "markdown": false,
-        "cpp": false,
+        "scminput": false,
+        "cpp": true,
         "c": false,
         "h": false
     },
