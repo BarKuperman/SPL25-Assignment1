@@ -7,16 +7,29 @@
  * TODO: Implement MixingEngineService constructor
  */
 MixingEngineService::MixingEngineService()
-    : active_deck(0)
+    : active_deck(0), auto_sync(false), bpm_tolerance(0) 
 {
-    // Your implementation here
+    // Initialize deck pointers to null
+    decks[0] = nullptr;
+    decks[1] = nullptr;
+
+    // Log the required initialization message
+    std::cout << "[MixingEngineService] Initialized with 2 empty decks." << std::endl;
 }
 
 /**
  * TODO: Implement MixingEngineService destructor
  */
 MixingEngineService::~MixingEngineService() {
-    // Your implementation here
+    std::cout << "[MixingEngineService] Cleaning up decks" << std::endl;
+    if(decks[0]){
+        delete decks[0];
+    }
+    if(decks[1]){
+        delete decks[1];
+    }
+    decks[0] = nullptr;
+    decks[1] = nullptr;
 }
 
 
@@ -26,8 +39,39 @@ MixingEngineService::~MixingEngineService() {
  * @return: Index of the deck where track was loaded, or -1 on failure
  */
 int MixingEngineService::loadTrackToDeck(const AudioTrack& track) {
-    // Your implementation here
-    return -1; // Placeholder
+
+    std::cout << " \n=== Loading Track to Deck ===" << std::endl;
+
+    PointerWrapper<AudioTrack> p = track.clone();
+    if(!p.get()){
+        std::cout << "Track:"<< track.get_title() <<" failed to clone" << std::endl;
+        return -1;
+    } 
+    int target = 1-active_deck;
+    std::cout << " [Deck Switch] Target deck:" <<target<< "" << std::endl;
+    if(decks[target]){
+        delete decks[target];
+        decks[target] = nullptr;
+    }
+    p -> load();
+    p -> analyze_beatgrid();
+
+    if(decks[active_deck] && auto_sync && std::abs(decks[active_deck]->get_bpm() - p->get_bpm()) > bpm_tolerance ){
+        p->set_bpm(decks[active_deck]->get_bpm());
+    }
+    decks[target] = p.release();
+    std::cout << "[Load Complete] "<< decks[target]->get_title() <<" is now loaded on deck "<< target<<"" << std::endl;
+    if(!decks[active_deck]){
+        std::cout << " [Unload] Unloading previous deck" <<active_deck<< "("<<decks[active_deck]<<")" << std::endl;
+        
+        delete decks[active_deck];
+        decks[active_deck] = nullptr;
+    }
+    active_deck = target;
+    std::cout << "[Active Deck] Switched to deck "<<target<<"" << std::endl;
+
+
+    return target;
 }
 
 /**
