@@ -9,13 +9,25 @@
 
 DJLibraryService::DJLibraryService(const Playlist& playlist) 
     : playlist(playlist) {}
+
+
 /**
  * @brief Load a playlist from track indices referencing the library
  * @param library_tracks Vector of track info from config
  */
 void DJLibraryService::buildLibrary(const std::vector<SessionConfig::TrackInfo>& library_tracks) {
-    //Todo: Implement buildLibrary method
-    std::cout << "TODO: Implement DJLibraryService::buildLibrary method\n"<< library_tracks.size() << " tracks to be loaded into library.\n";
+    for(const SessionConfig::TrackInfo& info : library_tracks){
+        if(info.type == "MP3"){
+            library.push_back(new MP3Track(info.title, info.artists, info.duration_seconds, info.bpm, info.extra_param1, info.extra_param2));
+            std::cout << "MP3: MP3Track created: " <<info.extra_param1<< " kbps"<< std::endl;
+        } 
+        if(info.type == "WAV"){
+            library.push_back(new WAVTrack(info.title, info.artists, info.duration_seconds, info.bpm, info.extra_param1, info.extra_param2));
+            std::cout << "WAV: WAVTrack created: "<<info.extra_param1<< "Hz/" <<info.extra_param2<< "bit" << std::endl;
+        }
+    }
+    std::cout << "[INFO] Track library built: " <<library_tracks.size()<< " tracks loaded" << std::endl;
+
 }
 
 /**
@@ -53,22 +65,44 @@ Playlist& DJLibraryService::getPlaylist() {
  * HINT: Leverage Playlist's find_track method
  */
 AudioTrack* DJLibraryService::findTrack(const std::string& track_title) {
-    // Your implementation here
-    return nullptr; // Placeholder
+    AudioTrack* track = playlist.find_track(track_title);
+    if(!track){
+        return nullptr; // Placeholder
+    }
+    return track;
 }
 
 void DJLibraryService::loadPlaylistFromIndices(const std::string& playlist_name, 
                                                const std::vector<int>& track_indices) {
-    // Your implementation here
-    // For now, add a placeholder to fix the linker error
-    (void)playlist_name;  // Suppress unused parameter warning
-    (void)track_indices;  // Suppress unused parameter warning
+    std::cout << "[INFO] Loading playlist: "<<playlist_name<<"" << std::endl;
+    Playlist playlist(playlist_name);
+    for(int i : track_indices){
+        if(i<1 || i-1 >= library.size()){ //static_cast<int>(library.size())
+            std::cout << "[WARNING] Invalid track index: " <<i<<"" << std::endl;
+            continue;
+        }
+        AudioTrack *track = library[i - 1]->clone().release();
+        if (!track)
+        {
+            std::cout << "[ERROR] Track failed to clone" << std::endl;
+            continue;
+        }
+        track->load();
+        track->analyze_beatgrid();
+        playlist.add_track(track);
+        std::cout << "Added ’"<<track->get_title()<< "’ to playlist ’"<<playlist_name<<"’" << std::endl;
+    }
+    std::cout << "[INFO] Playlist loaded: "<<playlist_name<< " (" <<library.size()<<"  tracks)" << std::endl;
+
 }
 /**
  * TODO: Implement getTrackTitles method
  * @return Vector of track titles in the playlist
  */
 std::vector<std::string> DJLibraryService::getTrackTitles() const {
-    // Your implementation here
-    return std::vector<std::string>(); // Placeholder
+    std::vector<std::string> titles;
+    for(AudioTrack* track : library){
+        titles.push_back(track->get_title());
+    }
+    return titles;
 }
