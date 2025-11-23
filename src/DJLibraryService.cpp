@@ -67,7 +67,7 @@ Playlist& DJLibraryService::getPlaylist() {
 AudioTrack* DJLibraryService::findTrack(const std::string& track_title) {
     AudioTrack* track = playlist.find_track(track_title);
     if(!track){
-        return nullptr; // Placeholder
+        return nullptr; 
     }
     return track;
 }
@@ -90,9 +90,11 @@ void DJLibraryService::loadPlaylistFromIndices(const std::string& playlist_name,
         track->load();
         track->analyze_beatgrid();
         playlist.add_track(track);
+        this-> playlist = playlist;
         std::cout << "Added ’"<<track->get_title()<< "’ to playlist ’"<<playlist_name<<"’" << std::endl;
     }
-    std::cout << "[INFO] Playlist loaded: "<<playlist_name<< " (" <<library.size()<<"  tracks)" << std::endl;
+    std::cout << "[INFO] Playlist loaded: "<<playlist_name<< " (" <<track_indices.size()<<" tracks)" << std::endl;
+    //playlist.display();
 
 }
 /**
@@ -101,7 +103,7 @@ void DJLibraryService::loadPlaylistFromIndices(const std::string& playlist_name,
  */
 std::vector<std::string> DJLibraryService::getTrackTitles() const {
     std::vector<std::string> titles;
-    for(AudioTrack* track : library){
+    for(AudioTrack* track : playlist.getTracks()){
         titles.push_back(track->get_title());
     }
     return titles;

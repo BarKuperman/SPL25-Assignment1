@@ -41,6 +41,12 @@ public:
     ~Playlist();
 
     /**
+     * Assignment operator
+     */
+    Playlist& operator=(const Playlist& other);
+
+
+    /**
      * Add a track to the playlist
      * @param track Pointer to AudioTrack to add
      */
