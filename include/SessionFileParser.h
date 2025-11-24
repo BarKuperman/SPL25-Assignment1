@@ -48,6 +48,7 @@ struct SessionConfig {
     SessionConfig() 
         : app_name(""), 
           version(""), 
+          playlists_directory(""), //added to solve compiler warning
           library_tracks(), 
           controller_cache_size(8), 
           default_crossfade_time(5), 

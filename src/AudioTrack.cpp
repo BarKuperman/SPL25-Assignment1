@@ -88,7 +88,7 @@ AudioTrack::AudioTrack(AudioTrack&& other) noexcept
 
     // TODO: Implement the move constructor
     #ifdef DEBUG
-    std::cout << "AudioTrack move constructor called for: " << other.title << std::endl;
+    std::cout << "AudioTrack move constructor called for: " << title << std::endl;
     #endif
     
     other.waveform_data = nullptr;

@@ -14,7 +14,9 @@
 class DJLibraryService {
 public:
     DJLibraryService(const Playlist& playlist);
-    DJLibraryService() = default;
+
+    // DJLibraryService() = default;
+    DJLibraryService() : playlist(), library() {} //changed because of compiler warnings
 
     /**
      * @brief Build the track library from parsed config data
