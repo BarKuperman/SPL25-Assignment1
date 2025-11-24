@@ -8,7 +8,7 @@
 
 
 DJLibraryService::DJLibraryService(const Playlist& playlist) 
-    : playlist(playlist) {}
+    : playlist(playlist), library() {} //added library() to suppress compiler warning
 
 
 /**
@@ -77,7 +77,7 @@ void DJLibraryService::loadPlaylistFromIndices(const std::string& playlist_name,
     std::cout << "[INFO] Loading playlist: "<<playlist_name<<"" << std::endl;
     playlist = Playlist(playlist_name);
     for(int i : track_indices){
-        if(i<1 || i-1 >= library.size()){ //static_cast<int>(library.size())
+        if(i<1 || static_cast<size_t>(i - 1) >= library.size()){ //static_cast<int>(i-1) to suppress compiler warning
             std::cout << "[WARNING] Invalid track index: " <<i<<"" << std::endl;
             continue;
         }
