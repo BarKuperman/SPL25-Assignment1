@@ -45,6 +45,15 @@ public:
      */
     Playlist& operator=(const Playlist& other);
 
+    
+    /**
+     * Copy Constructor
+     */
+    Playlist(const Playlist& other);
+
+    Playlist(Playlist&& other) noexcept;
+
+    Playlist& operator=(Playlist&& other) noexcept;
 
     /**
      * Add a track to the playlist

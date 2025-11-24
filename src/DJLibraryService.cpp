@@ -75,7 +75,7 @@ AudioTrack* DJLibraryService::findTrack(const std::string& track_title) {
 void DJLibraryService::loadPlaylistFromIndices(const std::string& playlist_name, 
                                                const std::vector<int>& track_indices) {
     std::cout << "[INFO] Loading playlist: "<<playlist_name<<"" << std::endl;
-    Playlist playlist(playlist_name);
+    playlist = Playlist(playlist_name);
     for(int i : track_indices){
         if(i<1 || i-1 >= library.size()){ //static_cast<int>(library.size())
             std::cout << "[WARNING] Invalid track index: " <<i<<"" << std::endl;
@@ -90,7 +90,6 @@ void DJLibraryService::loadPlaylistFromIndices(const std::string& playlist_name,
         track->load();
         track->analyze_beatgrid();
         playlist.add_track(track);
-        this-> playlist = playlist;
         std::cout << "Added ’"<<track->get_title()<< "’ to playlist ’"<<playlist_name<<"’" << std::endl;
     }
     std::cout << "[INFO] Playlist loaded: "<<playlist_name<< " (" <<track_indices.size()<<" tracks)" << std::endl;

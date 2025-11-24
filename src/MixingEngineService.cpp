@@ -56,14 +56,14 @@ int MixingEngineService::loadTrackToDeck(const AudioTrack& track) {
     p -> load();
     p -> analyze_beatgrid();
 
+
     if(decks[active_deck] && auto_sync && std::abs(decks[active_deck]->get_bpm() - p->get_bpm()) > bpm_tolerance ){
         p->set_bpm(decks[active_deck]->get_bpm());
     }
     decks[target] = p.release();
     std::cout << "[Load Complete] "<< decks[target]->get_title() <<" is now loaded on deck "<< target<<"" << std::endl;
-    if(!decks[active_deck]){
+    if(decks[active_deck]){
         std::cout << " [Unload] Unloading previous deck" <<active_deck<< "("<<decks[active_deck]<<")" << std::endl;
-        
         delete decks[active_deck];
         decks[active_deck] = nullptr;
     }
