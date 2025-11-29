@@ -18,11 +18,11 @@ void DJLibraryService::buildLibrary(const std::vector<SessionConfig::TrackInfo>&
     for(const SessionConfig::TrackInfo& info : library_tracks){
         if(info.type == "MP3"){
             library.push_back(new MP3Track(info.title, info.artists, info.duration_seconds, info.bpm, info.extra_param1, info.extra_param2));
-            std::cout << "MP3: MP3Track created: " <<info.extra_param1<< " kbps"<< std::endl;
+            //std::cout << "MP3: MP3Track created: " <<info.extra_param1<< " kbps"<< std::endl;
         } 
         if(info.type == "WAV"){
             library.push_back(new WAVTrack(info.title, info.artists, info.duration_seconds, info.bpm, info.extra_param1, info.extra_param2));
-            std::cout << "WAV: WAVTrack created: "<<info.extra_param1<< "Hz/" <<info.extra_param2<< "bit" << std::endl;
+            //std::cout << "WAV: WAVTrack created: "<<info.extra_param1<< "Hz/" <<info.extra_param2<< "bit" << std::endl;
         }
     }
     std::cout << "[INFO] Track library built: " <<library_tracks.size()<< " tracks loaded" << std::endl;
@@ -89,7 +89,7 @@ void DJLibraryService::loadPlaylistFromIndices(const std::string& playlist_name,
         track->load();
         track->analyze_beatgrid();
         playlist.add_track(track);
-        std::cout << "Added ’"<<track->get_title()<< "’ to playlist ’"<<playlist_name<<"’" << std::endl;
+        //std::cout << "Added ''"<<track->get_title()<< "' to playlist '"<<playlist_name<<"'" << std::endl;
     }
     std::cout << "[INFO] Playlist loaded: "<<playlist_name<< " (" <<track_indices.size()<<" tracks)" << std::endl;
     //playlist.display();
