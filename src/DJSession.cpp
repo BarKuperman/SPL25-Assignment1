@@ -17,8 +17,13 @@ DJSession::DJSession(const std::string& name, bool play_all)
     session_config(),
     track_titles(),
     play_all(play_all),
+<<<<<<< HEAD
     stats()           
 {
+=======
+    stats()
+      {
+>>>>>>> upstream/main
     std::cout << "DJ Session System initialized: " << session_name << std::endl;
 }
 

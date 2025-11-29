@@ -7,7 +7,11 @@
  * TODO: Implement MixingEngineService constructor
  */
 MixingEngineService::MixingEngineService()
+<<<<<<< HEAD
     : decks(), active_deck(1), auto_sync(false), bpm_tolerance(0) 
+=======
+    : decks(), active_deck(1), auto_sync(false), bpm_tolerance(0)
+>>>>>>> upstream/main
 {
     // Initialize deck pointers to null
     decks[0] = nullptr;
