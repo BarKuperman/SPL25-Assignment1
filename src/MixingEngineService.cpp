@@ -7,7 +7,7 @@
  * TODO: Implement MixingEngineService constructor
  */
 MixingEngineService::MixingEngineService()
-    : active_deck(0), auto_sync(false), bpm_tolerance(0) 
+    : decks(), active_deck(1), auto_sync(false), bpm_tolerance(0) 
 {
     // Initialize deck pointers to null
     decks[0] = nullptr;
@@ -21,7 +21,7 @@ MixingEngineService::MixingEngineService()
  * TODO: Implement MixingEngineService destructor
  */
 MixingEngineService::~MixingEngineService() {
-    std::cout << "[MixingEngineService] Cleaning up decks" << std::endl;
+    std::cout << "[MixingEngineService] Cleaning up decks..." << std::endl;
     if(decks[0]){
         delete decks[0];
     }
@@ -40,7 +40,7 @@ MixingEngineService::~MixingEngineService() {
  */
 int MixingEngineService::loadTrackToDeck(const AudioTrack& track) {
 
-    std::cout << " \n=== Loading Track to Deck ===" << std::endl;
+    std::cout << "\n=== Loading Track to Deck ===" << std::endl;
 
     PointerWrapper<AudioTrack> p = track.clone();
     if(!p.get()){
@@ -48,7 +48,7 @@ int MixingEngineService::loadTrackToDeck(const AudioTrack& track) {
         return -1;
     } 
     int target = 1-active_deck;
-    std::cout << " [Deck Switch] Target deck:" <<target<< "" << std::endl;
+    std::cout << "[Deck Switch] Target deck: " <<target<< "" << std::endl;
     if(decks[target]){
         delete decks[target];
         decks[target] = nullptr;
@@ -56,14 +56,17 @@ int MixingEngineService::loadTrackToDeck(const AudioTrack& track) {
     p -> load();
     p -> analyze_beatgrid();
 
-
-    if(decks[active_deck] && auto_sync && std::abs(decks[active_deck]->get_bpm() - p->get_bpm()) > bpm_tolerance ){
-        p->set_bpm(decks[active_deck]->get_bpm());
+    if(can_mix_tracks(p)){
+        sync_bpm(p);
     }
+
+    // if(decks[active_deck] && auto_sync && std::abs(decks[active_deck]->get_bpm() - p->get_bpm()) > bpm_tolerance ){
+    //     p->set_bpm(decks[active_deck]->get_bpm());
+    // }
     decks[target] = p.release();
-    std::cout << "[Load Complete] "<< decks[target]->get_title() <<" is now loaded on deck "<< target<<"" << std::endl;
+    std::cout << "[Load Complete] '"<< decks[target]->get_title() <<"' is now loaded on deck "<< target<<"" << std::endl;
     if(decks[active_deck]){
-        std::cout << " [Unload] Unloading previous deck" <<active_deck<< "("<<decks[active_deck]->get_title()<<")" << std::endl;
+        std::cout << "[Unload] Unloading previous deck " <<active_deck<< " ("<<decks[active_deck]->get_title()<<")" << std::endl;
         delete decks[active_deck];
         decks[active_deck] = nullptr;
     }
@@ -115,8 +118,10 @@ void MixingEngineService::sync_bpm(const PointerWrapper<AudioTrack>& track) cons
     if(!decks[active_deck]||!track){
         return;
     }
-    int original = decks[active_deck]->get_bpm();
-    int newBPM = (original + track->get_bpm())/2;
+    // int original = decks[active_deck]->get_bpm(); We think should be this but changed it to be according to the print example
+    // int newBPM = (original + track->get_bpm())/2;
+    int original = track->get_bpm();
+    int newBPM = (original + decks[active_deck]->get_bpm())/2;
     track->set_bpm(newBPM);
     std::cout << "[Sync BPM] Syncing BPM from " <<original<<" to " <<newBPM<< "\n";
 }

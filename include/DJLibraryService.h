@@ -14,8 +14,6 @@
 class DJLibraryService {
 public:
     DJLibraryService(const Playlist& playlist);
-
-    // DJLibraryService() = default;
     DJLibraryService() : playlist(), library() {} //changed because of compiler warnings
 
     /**

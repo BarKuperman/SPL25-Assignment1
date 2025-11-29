@@ -36,7 +36,7 @@ void MP3Track::analyze_beatgrid() {
     double beats = (duration_seconds / 60.0) * bpm;
     double precision_factor =  bitrate / 320.0;
     std::cout << "  → Estimated beats: " << (int)beats 
-              << "  → Compression precision factor:" << precision_factor << "\n";
+              << "  → Compression precision factor: " << precision_factor << "\n";
 
 }
 

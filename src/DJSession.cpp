@@ -10,15 +10,15 @@
 
 DJSession::DJSession(const std::string& name, bool play_all)
     : session_name(name),
-      library_service(),      // <--- Initialize explicitly
-      controller_service(),   // <--- Initialize explicitly
-      mixing_service(),       // <--- Initialize explicitly
-      config_manager(),       // <--- Initialize explicitly
-      session_config(),       // <--- Initialize explicitly
-      track_titles(),         // <--- Initialize explicitly
-      play_all(play_all),
-      stats()                 // <--- Initialize explicitly 
-{
+    library_service(),
+    controller_service(),
+    mixing_service(),
+    config_manager(),
+    session_config(),
+    track_titles(),
+    play_all(play_all),
+
+stats(){
     std::cout << "DJ Session System initialized: " << session_name << std::endl;
 }
 
@@ -40,7 +40,7 @@ bool DJSession::load_playlist(const std::string& playlist_name)  {
     
     // Load playlist from track indices
     library_service.loadPlaylistFromIndices(playlist_name, it->second);
-    library_service.getPlaylist().display();
+    //library_service.getPlaylist().display();
     if (library_service.getPlaylist().is_empty()) {
         return false;
     }
@@ -78,7 +78,7 @@ int DJSession::load_track_to_controller(const std::string& track_name) {
         stats.errors++;
         return 0;
     }
-    std::cout << "[System] Loading track '"<<track_name<<"’ to controller..." << std::endl;
+    std::cout << "[System] Loading track '"<<track_name<<"' to controller..." << std::endl;
     int ret = controller_service.loadTrackToCache(*track);
     if(ret == 1){
         stats.cache_hits++;
@@ -151,7 +151,7 @@ void DJSession::simulate_dj_performance() {
     std::cout << "Cache Capacity: " << session_config.controller_cache_size << " slots (LRU policy)" << std::endl;
     std::cout << "\n--- Processing Tracks ---" << std::endl;
 
-    std::cout << "TODO: Implement the DJ performance simulation workflow here." << std::endl;
+//    std::cout << "TODO: Implement the DJ performance simulation workflow here." << std::endl;
     
     if(play_all){
         for(const auto& pair : session_config.playlists){
@@ -161,13 +161,15 @@ void DJSession::simulate_dj_performance() {
                 continue;
             }
             for(std::string track_title : track_titles){
-                std::cout << "\n–- Processing: "<<track_title<<" –-"<< std::endl; 
+                std::cout << "\n--- Processing: "<<track_title<<" ---"<< std::endl; 
                 stats.tracks_processed++;
                 load_track_to_controller(track_title);
+                controller_service.displayCacheStatus();
                 load_track_to_mixer_deck(track_title);
+                mixing_service.displayDeckStatus();
             }
             print_session_summary();
-            stats = SessionStats();
+            //stats = SessionStats();
         }
     }else{
         bool cont = true;
@@ -183,13 +185,15 @@ void DJSession::simulate_dj_performance() {
                 continue;
             }
              for(std::string track_title : track_titles){
-                std::cout << "\n–- Processing: "<<track_title<<" –-"<< std::endl; 
+                std::cout << "\n--- Processing: "<<track_title<<" ---"<< std::endl; 
                 stats.tracks_processed++;
                 load_track_to_controller(track_title);
+                controller_service.displayCacheStatus();
                 load_track_to_mixer_deck(track_title);
+                mixing_service.displayDeckStatus();
             }
             print_session_summary();
-            stats = SessionStats();
+           // stats = SessionStats();
         }
     }
     std::cout << "Session cancelled by user or all playlists played."<< std::endl; 
