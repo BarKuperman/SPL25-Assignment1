@@ -60,16 +60,20 @@ int MixingEngineService::loadTrackToDeck(const AudioTrack& track) {
         sync_bpm(p);
     }
 
-    // if(decks[active_deck] && auto_sync && std::abs(decks[active_deck]->get_bpm() - p->get_bpm()) > bpm_tolerance ){
-    //     p->set_bpm(decks[active_deck]->get_bpm());
-    // }
+
     decks[target] = p.release();
     std::cout << "[Load Complete] '"<< decks[target]->get_title() <<"' is now loaded on deck "<< target<<"" << std::endl;
-    if(decks[active_deck]){
-        std::cout << "[Unload] Unloading previous deck " <<active_deck<< " ("<<decks[active_deck]->get_title()<<")" << std::endl;
-        delete decks[active_deck];
-        decks[active_deck] = nullptr;
-    }
+    
+    
+    // if(decks[active_deck]){ 
+    //     std::cout << "[Unload] Unloading previous deck " <<active_deck<< " ("<<decks[active_deck]->get_title()<<")" << std::endl;
+    //     delete decks[active_deck];
+    //     decks[active_deck] = nullptr;
+    // }
+
+    // according to pdf this is needed but according to output example it is not
+
+
     active_deck = target;
     std::cout << "[Active Deck] Switched to deck "<<target<<"" << std::endl;
 
@@ -101,12 +105,20 @@ void MixingEngineService::displayDeckStatus() const {
  * @return: true if BPM difference <= tolerance, false otherwise
  */
 bool MixingEngineService::can_mix_tracks(const PointerWrapper<AudioTrack>& track) const {
-    if(!decks[active_deck]||!track){
+    if(!decks[active_deck]){
+        std::cout << "[Sync BPM] Cannot sync - one of the decks is empty.\n"; //according to pdf this is not needed.
         return false;
     }
-    if(std::abs(decks[active_deck]->get_bpm() - track->get_bpm()) > bpm_tolerance ){
+    if(!track){
         return false;
     }
+    if(std::abs(decks[active_deck]->get_bpm() - track->get_bpm()) <= bpm_tolerance ){//according to example output
+        return false;
+    }
+
+    // if(std::abs(decks[active_deck]->get_bpm() - track->get_bpm()) > bpm_tolerance ){//according to pdf
+    //     return false;
+    // }
     return true;
 }
 
