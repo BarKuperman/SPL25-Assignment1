@@ -15,6 +15,10 @@ class DJLibraryService {
 public:
     DJLibraryService(const Playlist& playlist);
     DJLibraryService() : playlist(), library() {} //changed because of compiler warnings
+    ~DJLibraryService();
+
+    DJLibraryService(const DJLibraryService&) = delete;
+    DJLibraryService& operator=(const DJLibraryService&) = delete;
 
     /**
      * @brief Build the track library from parsed config data

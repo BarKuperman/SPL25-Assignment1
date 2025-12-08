@@ -13,7 +13,6 @@ MixingEngineService::MixingEngineService()
     decks[0] = nullptr;
     decks[1] = nullptr;
 
-    // Log the required initialization message
     std::cout << "[MixingEngineService] Initialized with 2 empty decks." << std::endl;
 }
 
@@ -130,8 +129,7 @@ void MixingEngineService::sync_bpm(const PointerWrapper<AudioTrack>& track) cons
     if(!decks[active_deck]||!track){
         return;
     }
-    // int original = decks[active_deck]->get_bpm(); We think should be this but changed it to be according to the print example
-    // int newBPM = (original + track->get_bpm())/2;
+
     int original = track->get_bpm();
     int newBPM = (original + decks[active_deck]->get_bpm())/2;
     track->set_bpm(newBPM);

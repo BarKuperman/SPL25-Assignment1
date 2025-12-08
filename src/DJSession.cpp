@@ -46,6 +46,7 @@ bool DJSession::load_playlist(const std::string& playlist_name)  {
     }
     
     track_titles = library_service.getTrackTitles();
+    std::reverse(track_titles.begin(),track_titles.end());//needed according to example but not according to pdf.
     return true;
 }
 
@@ -160,7 +161,6 @@ void DJSession::simulate_dj_performance() {
                 stats.errors++;
                 continue;
             }
-            std::reverse(track_titles.begin(),track_titles.end());//needed according to example but not according to pdf.
             for(std::string track_title : track_titles){
                 std::cout << "\n--- Processing: "<<track_title<<" ---"<< std::endl; 
                 stats.tracks_processed++;
