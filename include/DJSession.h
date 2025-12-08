@@ -66,6 +66,9 @@ public:
      */
     ~DJSession();
 
+    DJSession(const DJSession&) = delete; // added to suppress compiler warning
+    DJSession& operator=(const DJSession&) = delete; // added to suppress compiler warning
+
     // ========== ORCHESTRATION METHODS ==========
 
 
