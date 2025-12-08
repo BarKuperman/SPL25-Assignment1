@@ -12,6 +12,112 @@ Playlist::~Playlist() {
     #ifdef DEBUG
     std::cout << "Destroying playlist: " << playlist_name << std::endl;
     #endif
+    
+    PlaylistNode* current = head;
+    while (current != nullptr) {
+        PlaylistNode* next = current->next; 
+        delete current->track;
+        delete current;
+        current = next;
+    }
+    head = nullptr;
+}
+
+Playlist::Playlist(const Playlist& other) 
+    : head(nullptr), playlist_name(other.playlist_name + "_copy"), track_count(0) {
+    
+    PlaylistNode* current = other.head;
+    
+    PlaylistNode* tail = nullptr;
+
+    while (current) {
+        if (current->track) {
+            AudioTrack* cloned_track = current->track->clone().release();
+            
+            PlaylistNode* new_node = new PlaylistNode(cloned_track);
+            
+            if (!head) {
+                head = new_node;
+                tail = new_node;
+            } else {
+                tail->next = new_node;
+                tail = new_node;
+            }
+            track_count++;
+        }
+        current = current->next;
+    }
+}
+
+Playlist& Playlist::operator=(const Playlist& other) {
+    if (this == &other) {
+        return *this;
+    }
+
+    PlaylistNode* current = head;
+    while (current) {
+        PlaylistNode* next = current->next;
+        delete current->track;
+        delete current;
+        current = next;
+    }
+    head = nullptr;
+    track_count = 0;
+
+    playlist_name = other.playlist_name;
+    current = other.head;
+    PlaylistNode* tail = nullptr;
+
+    while (current) {
+        if (current->track) {
+            AudioTrack* cloned_track = current->track->clone().release();
+            PlaylistNode* new_node = new PlaylistNode(cloned_track);
+            
+            if (!head) {
+                head = new_node;
+                tail = new_node;
+            } else {
+                tail->next = new_node;
+                tail = new_node;
+            }
+            track_count++;
+        }
+        current = current->next;
+    }
+
+    return *this;
+}
+
+Playlist::Playlist(Playlist&& other) noexcept
+    : head(other.head), 
+      playlist_name(std::move(other.playlist_name)), 
+      track_count(other.track_count) {
+    
+    other.head = nullptr;
+    other.track_count = 0;
+}
+
+Playlist& Playlist::operator=(Playlist&& other) noexcept {
+    if (this == &other) {
+        return *this;
+    }
+
+    PlaylistNode* current = head;
+    while (current) {
+        PlaylistNode* next = current->next;
+        delete current->track;
+        delete current;
+        current = next;
+    }
+
+    head = other.head;
+    playlist_name = std::move(other.playlist_name);
+    track_count = other.track_count;
+
+    other.head = nullptr;
+    other.track_count = 0;
+
+    return *this;
 }
 
 void Playlist::add_track(AudioTrack* track) {
@@ -49,6 +155,8 @@ void Playlist::remove_track(const std::string& title) {
         } else {
             head = current->next;
         }
+        delete current->track;
+        delete current;
 
         track_count--;
         std::cout << "Removed '" << title << "' from playlist" << std::endl;
@@ -56,6 +164,8 @@ void Playlist::remove_track(const std::string& title) {
     } else {
         std::cout << "Track '" << title << "' not found in playlist" << std::endl;
     }
+    
+    
 }
 
 void Playlist::display() const {
@@ -126,3 +236,4 @@ std::vector<AudioTrack*> Playlist::getTracks() const {
     }
     return tracks;
 }
+

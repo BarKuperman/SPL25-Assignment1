@@ -39,7 +39,7 @@ private:
     ConfigurationManager config_manager;
     SessionConfig session_config;
     std::vector<std::string> track_titles;
-    bool play_all = false;
+    bool play_all;
     // Session statistics
     struct SessionStats {
         size_t tracks_processed = 0;
@@ -65,6 +65,9 @@ public:
      * @brief Destructor
      */
     ~DJSession();
+
+    DJSession(const DJSession&) = delete; // added to suppress compiler warning
+    DJSession& operator=(const DJSession&) = delete; // added to suppress compiler warning
 
     // ========== ORCHESTRATION METHODS ==========
 
