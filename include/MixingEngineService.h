@@ -19,8 +19,8 @@ public:
     MixingEngineService();
     ~MixingEngineService();
 
-    MixingEngineService(const MixingEngineService&) = delete; // added to suppress compiler warning
-    MixingEngineService& operator=(const MixingEngineService&) = delete; // added to suppress compiler warning
+    MixingEngineService(const MixingEngineService&) = delete; // service should not have more than one instance
+    MixingEngineService& operator=(const MixingEngineService&) = delete;
 
     /** Contract: Load a track to the next deck per instant-transition policy
      * - @param track: reference to a cached track to be cloned for the mixer

@@ -66,8 +66,8 @@ public:
      */
     ~DJSession();
 
-    DJSession(const DJSession&) = delete; // added to suppress compiler warning
-    DJSession& operator=(const DJSession&) = delete; // added to suppress compiler warning
+    DJSession(const DJSession&) = delete; // service should not have more than one instance
+    DJSession& operator=(const DJSession&) = delete;
 
     // ========== ORCHESTRATION METHODS ==========
 

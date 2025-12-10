@@ -14,6 +14,10 @@
  */
 class DJControllerService {
 public:
+
+    DJControllerService(const DJControllerService&) = delete; // service should not have more than one instance
+    DJControllerService& operator=(const DJControllerService&) = delete;
+
     // Construct with a given cache size
     explicit DJControllerService(size_t cache_size = 8);
 
