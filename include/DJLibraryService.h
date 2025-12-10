@@ -17,7 +17,7 @@ public:
     DJLibraryService() : playlist(), library() {} //changed because of compiler warnings
     ~DJLibraryService();
 
-    DJLibraryService(const DJLibraryService&) = delete;
+    DJLibraryService(const DJLibraryService&) = delete; // service should not have more than one instance
     DJLibraryService& operator=(const DJLibraryService&) = delete;
 
     /**
